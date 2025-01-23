@@ -1,76 +1,87 @@
-import React from 'react';
-import { Space, Table, Tag } from 'antd';
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-    render: (text) => <a>{text}</a>,
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address',
-  },
-  {
-    title: 'Tags',
-    key: 'tags',
-    dataIndex: 'tags',
-    render: (_, { tags }) => (
-      <>
-        {tags.map((tag) => {
-          let color = tag.length > 5 ? 'geekblue' : 'green';
-          if (tag === 'loser') {
-            color = 'volcano';
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </>
-    ),
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (_, record) => (
-      <Space size="middle">
-        <a>Invite {record.name}</a>
-        <a>Delete</a>
-      </Space>
-    ),
-  },
-];
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  
-];
-const MoviesList = () => <Table columns={columns} dataSource={data} />;
+import React, { useEffect, useState } from 'react';
+import { Button, message, Popconfirm, Space, Table, Tag } from 'antd';
+import { DeleteFilled, DeleteOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+
+const api = 'https://dummyjson.com/products';
+
+const MoviesList = () =>{
+    
+    const [movies, setMovies] = useState([]);
+
+    useEffect(() => {
+        fetch(api).then(res => res.json()).then(data => setMovies(data.products));
+    }, []);
+
+
+    const columns = [
+        {
+          title: 'Title',
+          dataIndex: 'title',
+          key: 'title',
+          render: (text) => <a>{text}</a>,
+        },
+        {
+          title: 'Category',
+          dataIndex: 'category',
+          key: 'category',
+        },
+        {
+            title: 'Stock',
+            key: 'stock',
+            dataIndex: 'stock',
+            render: (_, record) => (
+                record.stock > 0 ?
+                    <Tag color="green">Available {record.stock}</Tag>
+                    :
+                    <Tag color="volcano">Out of Stock</Tag>
+            ),
+        },
+        {
+            title: 'Price',
+            dataIndex: 'price',
+            key: 'price',
+        },
+        {
+          title: 'Action',
+          key: 'action',
+            render: (_, record) => (
+                <Space size="middle">
+
+                    <Link to={`/details/${record.id}`}>
+                        <Button color='primary' icon={<InfoCircleOutlined />} />
+                    </Link>
+
+                    <Popconfirm
+                        title="Delete the movie"
+                        description={`Are you sure to delete this ${record.title}?`}
+                        onConfirm={() => onDelete(record.id)}
+                        okText="Yes"
+                      cancelText="No"
+                  >
+                      <Button danger icon={<DeleteOutlined />} />
+                  </Popconfirm>
+                  
+            </Space>
+          ),
+        },
+      ];
+
+    const onDelete = (id) => {
+        const index = movies.findIndex(x => x,id = id);
+        if(index !== -1)
+        {
+            setMovies(movies.filter((_, i) => i !== index));
+            message.success('Movie deleted successfully');
+        }
+        else
+            message.error("Movie does not found");
+    }
+
+
+    return <Table columns={columns} dataSource={movies} />;
+
+
+}
+
 export default MoviesList;
