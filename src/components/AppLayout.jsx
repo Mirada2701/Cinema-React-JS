@@ -7,6 +7,7 @@ import {
   InfoCircleOutlined,
   PieChartOutlined,
   PlayCircleOutlined,
+  PlusCircleOutlined,
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
@@ -26,9 +27,10 @@ function getItem(label, key, icon, children) {
 const items = [
   getItem(<Link to="/">Home</Link>, '1', <HomeOutlined />),
   getItem(<Link to="/movies">Movies</Link>, '2', <PlayCircleOutlined />),
-  getItem(<Link to="/profile">Profile</Link>, 'sub2', <UserOutlined />, [getItem('My profile', '6'), getItem('Exit', '8')]),
-  getItem(<Link to="/about">About</Link>, 'sub1', <InfoCircleOutlined />),
-  getItem(<Link to="/contacts">Contacts</Link>, '9', <ContactsOutlined />),
+  getItem(<Link to="/profile">Profile</Link>, 'sub1', <UserOutlined />, [getItem('My profile', '6'), getItem('Exit', '8')]),
+  getItem(<Link to="/create">Create Movie</Link>, '4', <PlusCircleOutlined />),
+  getItem(<Link to="/about">About</Link>, '5', <InfoCircleOutlined />),
+  getItem(<Link to="/contacts">Contacts</Link>, '6', <ContactsOutlined />),
 ];
 const AppLayout = () => {
 
